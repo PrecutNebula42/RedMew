@@ -3,6 +3,7 @@ local Module = {}
 local Gui = require('utils.gui')
 local Utils = require('utils.core')
 local Game = require 'utils.game'
+local Color = require 'resources.color_presets'
 
 local report_frame_name = Gui.uid_name()
 local report_close_button_name = Gui.uid_name()
@@ -97,6 +98,7 @@ function Module.report(reporting_player, reported_player, message)
     local player_index
     if reporting_player then
         player_index = reporting_player.index
+        reporting_player.print('Your report has been sent.')
     end
     table.insert(global.reports, {reporting_player_index = player_index, reported_player_index = reported_player.index, message = message, tick = game.tick})
 
@@ -138,6 +140,7 @@ function Module.cmd_report(cmd)
             return nil
         end
         Module.report(reporting_player, reported_player, string.sub(cmd.parameter, string.len(params[1]) + 2))
+        reporting_player.print('Your report has been sent.')
     end
 end
 
@@ -204,7 +207,7 @@ function Module.jail(target_player, player)
         -- Let admin know it worked, let target know what's going on.
         target_player.print(prefix)
         target_player.print('You have been placed in jail by ' .. jailed_by .. '. The only action avaliable to you is chatting.')
-        target_player.print('Please respond to inquiries from the admins.', {r = 1, g = 1, b = 0, a = 1})
+        target_player.print('Please respond to inquiries from the admins.', Color.yellow)
         target_player.print(prefix_e)
         Utils.print_admins(target_player.name .. ' has been jailed by ' .. player.name)
         Utils.log_command(Utils.get_actor(), 'jail', target_player.name)
@@ -261,7 +264,7 @@ function Module.unjail_player(cmd)
         -- Let admin know it worked, let target know what's going on.
         Game.player_print(target .. ' has been returned to the default group. They have been advised of this.')
         target_player.print(prefix)
-        target_player.print('Your ability to perform actions has been restored', {r = 0, g = 1, b = 0, a = 1})
+        target_player.print('Your ability to perform actions has been restored', Color.green)
         target_player.print(prefix_e)
         Utils.print_admins(target_player.name .. ' has been released from jail by ' .. player.name)
         Utils.log_command(Utils.get_actor(), 'unjail', target_player.name)

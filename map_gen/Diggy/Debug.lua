@@ -1,5 +1,7 @@
 -- dependencies
 local BaseDebug = require 'utils.debug'
+local Color = require 'resources.color_presets'
+
 local min = math.min
 local max = math.max
 local floor = math.floor
@@ -8,8 +10,8 @@ local abs = math.abs
 -- this
 local Debug = {}
 
-local default_base_color = {r = 1, g = 1, b = 1}
-local default_delta_color = {r = 0, g = 0, b = 0}
+local default_base_color = Color.white
+local default_delta_color = Color.black
 
 ---@deprecated use 'utils.debug'.print instead
 function Debug.print(message)
@@ -104,7 +106,6 @@ end
     @param value of number to be displayed
     @param surface LuaSurface
     @param position Position {x, y}
-    @param scale float
     @param offset float position offset
     @param immutable bool if immutable, only set, never do a surface lookup, values never change
     @param color_value float How far along the range of values of colors the value is to be displayed
@@ -113,7 +114,7 @@ end
     @param under_bound {r,g,b} The color to be used if color_value < 0
     @param over_bound {r,g,b} The color to be used if color_value > 1
 ]]
-function Debug.print_colored_grid_value(value, surface, position, scale, offset, immutable,
+function Debug.print_colored_grid_value(value, surface, position, offset, immutable,
         color_value, base_color, delta_color, under_bound, over_bound)
     local is_string = type(value) == 'string'
     -- default values:
@@ -127,9 +128,11 @@ function Debug.print_colored_grid_value(value, surface, position, scale, offset,
     elseif (color_value > 1) then
         color = o_color
     else
-        color = { r = color.r + color_value * d_color.r,
-                  g = color.g + color_value * d_color.g,
-                  b = color.b + color_value * d_color.b }
+        color = {
+            r = color.r + color_value * d_color.r,
+            g = color.g + color_value * d_color.g,
+            b = color.b + color_value * d_color.b
+        }
     end
 
     local text = value
